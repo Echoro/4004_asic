@@ -1,0 +1,11 @@
+ref/
+*/DC/dc_work/
+*/DC/alib-52/
+*/DC/output/
+*/DC/run_log/
+
+*/innovus/work/
+*/innovus/output/
+
+FPGA/4004_zynq7020B/
+FPGA/logs/

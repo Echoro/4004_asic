@@ -1,0 +1,2 @@
+修改lvs和drc实现
+主要操作是gui操作，对foundry厂给的PDK文件进行修改即可

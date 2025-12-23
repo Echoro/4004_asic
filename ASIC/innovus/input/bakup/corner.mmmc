@@ -1,0 +1,32 @@
+# create_library_set -name saed32hvt_ff1p16vn40c -timing {/home/eda/PDK/32-28nm_EDK_12162019/SAED32_EDK/lib/stdcell_hvt/db_nldm/saed32hvt_ff1p16vn40c.lib}
+
+# multi vdd
+create_library_set -name saed32hvt_ff1p16vn40c -timing \
+    {/home/library/tsmc65lp/std/TSMCHOME/digital/Front_End/timing_power_noise/NLDM/tcbn65lp_220a/tcbn65l pwc20d9d9.lib} \
+    {/home/library/tsmc65lp/std/TSMCHOME/digital/Front_End/timing_power_noise/NLDM/tcbn65lp_220a/tcbn65l pwc20d9.lib} \
+    {/home/project/cp_training_backend1/users/cicc014/target/UPF_ASIC_FLOW/cus_pdk/lib/switch.lib}
+
+create_constraint_mode -name sdc -sdc_files {../../DC/sdc/top.sdc}
+
+create_rc_corner -name rcworst_rc -cap_table /home/library/tsmc65lp/std/TSMCHOME/digital/Back_End/lef/tcbn65lp_200a/techfiles/captable/cln65lp_ip09m+alrdl_top2_rcworst.captable -T 0
+create_rc_corner -name rcbest_rc -cap_table /home/library/tsmc65lp/std/TSMCHOME/digital/Back_End/lef/tcbn65lp_200a/techfiles/captable/cln65lp_ip09m+alrdl_top2_rcbest.captable -T 0
+
+create_delay_corner -name worst_corner \
+    -library_set saed32hvt_ff1p16vn40c \
+    -rc_corner rcworst_rc
+
+create_delay_corner -name best_corner \
+    -library_set saed32hvt_ff1p16vn40c \
+    -rc_corner rcbest_rc
+
+create_analysis_view -name setup_view \
+    -delay_corner worst_corner \
+    -constraint_mode sdc
+
+create_analysis_view -name hold_view \
+    -delay_corner best_corner \
+    -constraint_mode sdc
+
+set_analysis_view -setup {setup_view} -hold {hold_view}
+
+report_analysis_views -type {all}

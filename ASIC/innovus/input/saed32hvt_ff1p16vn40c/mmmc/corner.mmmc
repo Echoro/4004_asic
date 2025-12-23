@@ -1,0 +1,25 @@
+create_library_set -name saed32hvt_ff1p16vn40c -timing /home/eda/PDK/SAED_32-28nm/SAED32_EDK/lib/stdcell_hvt/db_nldm/saed32hvt_ff1p16vn40c.lib
+
+create_constraint_mode -name sdc -sdc_files ../scripts/../../DC/output/saed32hvt_ff1p16vn40c/sdc/top.sdc
+
+
+
+create_delay_corner -name worst_corner \
+    -library_set saed32hvt_ff1p16vn40c \
+
+
+create_delay_corner -name best_corner \
+    -library_set saed32hvt_ff1p16vn40c \
+
+
+create_analysis_view -name setup_view \
+    -delay_corner worst_corner \
+    -constraint_mode sdc
+
+create_analysis_view -name hold_view \
+    -delay_corner best_corner \
+    -constraint_mode sdc
+
+set_analysis_view -setup {setup_view} -hold {hold_view}
+
+report_analysis_views -type {all}

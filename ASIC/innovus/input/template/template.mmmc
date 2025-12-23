@@ -1,0 +1,26 @@
+create_library_set -name $LIBRARY_NAME -timing $TIMING_LIBS
+
+create_constraint_mode -name sdc -sdc_files $SDC_FILES
+
+create_rc_corner -name rcworst_rc -cap_table $RC_WORST_CAP -T $WORST_TEMP
+create_rc_corner -name rcbest_rc -cap_table $RC_BEST_CAP -T $BEST_TEMP
+
+create_delay_corner -name worst_corner \
+    -library_set $LIBRARY_NAME \
+    -rc_corner rcworst_rc
+
+create_delay_corner -name best_corner \
+    -library_set $LIBRARY_NAME \
+    -rc_corner rcbest_rc
+
+create_analysis_view -name setup_view \
+    -delay_corner worst_corner \
+    -constraint_mode sdc
+
+create_analysis_view -name hold_view \
+    -delay_corner best_corner \
+    -constraint_mode sdc
+
+set_analysis_view -setup {setup_view} -hold {hold_view}
+
+report_analysis_views -type {all}
