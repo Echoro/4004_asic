@@ -1,0 +1,43 @@
+#Enables expression coverage of various Verilog and VHDL operators.
+set_expr_coverable_operators -all
+
+#Enables expression coverage of operators in various conditions and assignments.
+set_expr_coverable_statements -all
+
+#Enables scoring of Verilog modules compiled with -v/-y or -libcell option but continues to disable the scoring of Verilog modules defined
+#with the 'celldefine compiler directive as well as VHDL VITAL cells.
+
+set_libcell_scoring
+
+#Enables scoring of block and expression coverage for functions and tasks defined directly inside SystemVerilog packages.
+set_subprogram_scoring -svpackage
+
+#Enables scoring of block and expression coverage for only used  functions and tasks defined inside VHDL packages.
+set_subprogram_scoring -vhdlpackage -used
+
+#Enables scoring of SystemVerilog continuous assignments, which is by disabled by default.
+set_assign_scoring
+
+#Scores branches together with block coverage.
+set_branch_scoring
+
+#Scores statements within a block.
+set_statement_scoring
+
+#Enables expression coverage for expression containing structs (packed and unpacked).
+set_expr_scoring -struct
+
+#Enables scoring of VHDL not operator.
+set_expr_scoring -vhdl_not_as_operator
+
+#Enables Toggle scoring and reporting of SystemVerilog enumerations and multidimensional static arrays , vectors, packed union, modport and generate blocks.
+set_toggle_scoring -sv_enum enable_mda -sv_struct_with_enum -sv_modport -sv_mda 16 -sv_mda_of_struct -sv_generate -sv_packed_union
+
+#Enables scoring of reset states and transitions for identified FSMs.
+set_fsm_reset_scoring
+
+#Enables scoring of immediate assertions inside a class in a package and assertions inside AMS modules.
+select_coverage  -ams_control  -imm_asrt_class_pkg
+
+#Enables scoring of block, expression and functional (assertion) coverage of VHDL elseif/else and case generate statements.
+enable_cov_with_vhd2008_genx

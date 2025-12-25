@@ -118,9 +118,9 @@ module MCS4_SYS (
 
     top u_top (
         // Inputs
-        .CLK     (CLK              ),
+        .clk     (CLK              ),
         .DATA_I  (DATA[3:0]        ),
-        .RES_N   (RES_N            ),
+        .rst_n   (RES_N            ),
         .TEST    (TEST             ),
         // Outputs
         .CM_RAM_N(CM_RAM_N[3:0]    ),

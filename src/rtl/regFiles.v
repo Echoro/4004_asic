@@ -28,15 +28,6 @@ module regFiles (
         input  wire             rn_alu,
         input  wire             rn_acc
     );
-
-    assign data_o_rom_addr = (A1 & do_fin)? reg_files[1] // Lower Bits
-        : (A2 & do_fin)? reg_files[0]                    // Middle Bits
-        : (A3 & do_fin)? pc_plus_one[11:8]
-        : (A1)? pc[ 3:0]
-        : (A2)? pc[ 7:4]
-        : (A3)? pc[11:8]
-        : 4'b0000;
-
     reg     [ 3:0] reg_files [0:15];
     //-------------------------------
     // Index Registers
@@ -47,7 +38,14 @@ module regFiles (
     wire    [3:0]  rn_index;
     wire    [3:0]  rn_index0;
     wire    [3:0]  rn_index1;
-    //
+
+    assign data_o_rom_addr = (A1 & do_fin)? reg_files[1] // Lower Bits
+        : (A2 & do_fin)? reg_files[0]                    // Middle Bits
+        : (A3 & do_fin)? pc_plus_one[11:8]
+        : (A1)? pc[ 3:0]
+        : (A2)? pc[ 7:4]
+        : (A3)? pc[11:8]
+        : 4'b0000;
     assign rn_index  = opropa0[3:0];
     assign rn_index0 = opropa0[3:0] & 4'b1110;
     assign rn_index1 = opropa0[3:0] | 4'b0001;

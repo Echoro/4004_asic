@@ -12,6 +12,10 @@ module tb ();
         #20;
         res_n = 1'b1;
     end
+    initial begin
+        #1000000;
+        $finish;
+    end
 MCS4_SYS U_MCS4_SYS
 (
     // CPU Interfface (i4004)
@@ -25,5 +29,8 @@ MCS4_SYS U_MCS4_SYS
     .ROM_INIT_WDATA (8'h00),   // Write Data to ROM during ROM_INIT_ENB
     .ROM_INIT_RDATA ()         // Read Data from ROM during ROM_INIT_ENB
 );
-
+// initial begin
+//     $fsdbDumpfile("wave/verdi/rtl.fsdb");
+//     $fsdbDumpvars(0, tb);
+// end
 endmodule

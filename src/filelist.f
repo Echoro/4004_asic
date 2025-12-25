@@ -5,4 +5,3 @@
 ./rtl/IF.v
 ./rtl/regFiles.v
 ./rtl/top.v
-

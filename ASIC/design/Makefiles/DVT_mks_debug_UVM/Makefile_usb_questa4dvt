@@ -1,0 +1,123 @@
+# ==============================================================================
+# Makefile for ModelSim UVM Simulation (Windows 璺緞绀轰緥)
+# ==============================================================================
+UVM_TEST := test_case1
+# ModelSim 瀹夎璺緞
+MODELSIM_HOME := D:/Questasim/QuestaSim_10.7c/win64
+DVT_HOME := D:/DVT/DVT_Install_package/dvt_eclipse
+# UVM 婧愮爜鏍圭洰褰�
+# UVM_HOME       := D:/uvm_pkg/uvm-core-2020.3.1/uvm-core-2020.3.1
+UVM_HOME       := D:/Questasim/QuestaSim_10.7c/verilog_src/uvm-1.1d
+UVM_DPI_HOME   := D:/Questasim/QuestaSim_10.7c/uvm-1.1d/win64
+QUESTA_UVM_PKG_PATH := D:/Questasim/QuestaSim_10.7c/verilog_src/questa_uvm_pkg-1.2
+# 搴撳悕
+UVM_LIB        := uvm_lib
+WORK_DIR       := work
+
+# 鏂囦欢鍒楄〃
+FILELIST       := filelist.f
+TOP_LEVEL      := top
+SIM_LOG        := sim.log
+
+# 宸ュ叿鍛戒护
+VLOG           := $(MODELSIM_HOME)/vlog.exe
+VSIM           := $(MODELSIM_HOME)/vsim.exe
+VLIB		   := $(MODELSIM_HOME)/vlib.exe
+VMAP		   := $(MODELSIM_HOME)/vmap.exe
+COVERAGE_OPT := bcestf
+
+UVM_TEST       :=  random_test_s        # UVM test name (can override by environment)
+MS       :=  0
+
+
+.PHONY: all uvm_compile compile simulate clean help cov cov_report debug
+
+all: compile simulate
+
+# 鐗瑰埆娉ㄦ剰锛�-mfcu浣垮緱modelsim鏀寔鍍弙cs涓�鏍风殑缂栬瘧鏂瑰紡
+# 涔熷氨鏄笉闇�瑕佸湪姣忎釜鏂囦欢寮�澶村寘鍚玼vm_pkg.sv鏂囦欢鏉ユ樉绀哄０鏄�
+COMMON_OPTS := -64 -suppress vlog-2583 \
+															+acc=rn+mod +ra -sv -timescale=1ns/1ps \
+						-L mtiUPF -mfcu +cover=$(COVERAGE_OPT) \
+						-modelsimini modelsim.ini \
+						-f $(DVT_HOME)/libs/dvt_chs/dvt_chs.questa.f
+
+#-L mtiAvm -L mtiOvm -L mtiUvm -L
+ifeq ($(findstring random,$(strip $(UVM_TEST))),random)
+COMMON_OPTS += +define+RANDOM_TEST+MS=$(MS)
+endif
+
+
+compile:
+	@echo "==========start compile!!=========="
+	@if [ ! -d work ]; then \
+		$(VLIB) work; $(VMAP) work work; \
+	fi
+	$(VLOG) $(COMMON_OPTS) +incdir+$(UVM_HOME)/src +incdir+$(QUESTA_UVM_PKG_PATH)/src $(QUESTA_UVM_PKG_PATH)/src/questa_uvm_pkg.sv $(UVM_HOME)/src/uvm_pkg.sv -f ./filelist.f
+
+#
+
+simulate:
+	@echo "==========start simulate!!TOP = $(TOP_LEVEL)=========="
+	@$(VSIM) -c -modelsimini modelsim.ini  -coverage -voptargs="+acc +cover=$(COVERAGE_OPT)"\
+			-sv_lib $(UVM_DPI_HOME)/uvm_dpi \
+						-wlf usb_uvm.wlf -debugDB\
+						-do "do $(DVT_HOME)/libs/dvt_debug_tcl/dvt_debug.tcl" \
+			-uvmcontrol=all \
+						+UVM_TESTNAME=$(UVM_TEST) \
+			+UVM_DEBUG \
+			+UVM_VERBOSITY=UVM_FULL +UVM_PHASE_TRACE +UVM_CONFIG_DB_TRACE \
+			+UVM_NO_RELNOTES \
+						+UVM_RECORD=1 \
+						$(WORK_DIR).$(TOP_LEVEL) | tee $(SIM_LOG)
+
+
+view:
+	@echo "==========start view!!=========="
+	@$(VSIM) -gui -view usb_uvm.wlf
+
+clean:
+	@echo "==========start clean=========="
+	@-rmdir $(WORK_DIR) $(UVM_LIB)
+	@-del transcript vsim.wlf $(SIM_LOG) *.ucdb *.html *.xml 2>nul
+
+help:
+	@echo ""
+	@echo "Usage:"
+	@echo "  make              # 缂栬瘧 UVM + 璁捐骞朵豢鐪�"
+	@echo "  make compile      # 缂栬瘧璁捐涓� Testbench"
+	@echo "  make simulate     # 杩愯浠跨湡 (榛樿瑕嗙洊鐜囨墦寮�)"
+	@echo "  make clean        # 娓呯悊"
+	@echo "  make view         # 鎵撳紑娉㈠舰鏂囦欢"
+	@echo "  make cov          # 鎻愬彇瑕嗙洊鐜囨暟鎹簱鏂囦欢"
+	@echo "  make cov_report   # 鐢熸垚 HTML 瑕嗙洊鐜囨姤鍛�"
+	@echo "  make debug        # 寮�鍚� UVM debug 浠跨湡"
+	@echo "  make help         # 鏄剧ず甯姪"
+	@echo ""
+
+# ========================= 鏂板鐩爣锛氳鐩栫巼鎻愬彇 ================================
+cov:
+	@echo "==========generate coverage report=========="
+	@vcover report \
+	-html -htmldir coverage_report \
+	-details \
+	-assert -directive \
+	-cvg \
+	-code $(COVERAGE_OPT) \
+	usb_uvm.ucdb
+
+
+# ========================= 鏂板鐩爣锛歎VM Debug 鏀寔 ============================
+debug:
+	@echo "==========start simulate!!TOP = $(TOP_LEVEL)=========="
+	@$(VSIM) -gui -modelsimini modelsim.ini  -coverage -voptargs="+acc +cover=$(COVERAGE_OPT)"\
+			-sv_lib $(UVM_DPI_HOME)/uvm_dpi \
+						-wlf usb_uvm.wlf -debugDB\
+						-do "add wave -r /*;add structure -r /*;log -r /*; coverage save -onexit usb_uvm.ucdb;run -all;quit" \
+			-uvmcontrol=all \
+						+UVM_TESTNAME=$(UVM_TEST) \
+			+UVM_DEBUG \
+			+UVM_VERBOSITY=UVM_FULL +UVM_PHASE_TRACE +UVM_CONFIG_DB_TRACE \
+			+UVM_NO_RELNOTES \
+						+UVM_RECORD=1 \
+						$(WORK_DIR).$(TOP_LEVEL) | tee $(SIM_LOG)
