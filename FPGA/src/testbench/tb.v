@@ -12,10 +12,14 @@ module tb ();
         #20;
         res_n = 1'b1;
     end
-    initial begin
-        #1000000;
-        $finish;
-    end
+
+// `ifdef VCS
+//     initial begin
+//         $fsdbDumpfile(`FSDB_FILE);
+//         $fsdbDumpvars(0, tb);
+//     end
+// `endif
+
 MCS4_SYS U_MCS4_SYS
 (
     // CPU Interfface (i4004)

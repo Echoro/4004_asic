@@ -21,13 +21,6 @@
 // A-F  1  |0-5  1 (Carry, CY changed)
 
 
-
-
-
-
-
-
-
 // NOP : No Operation
 `define NOP 8'b0000_0000
 // JCN : Jump Conditional

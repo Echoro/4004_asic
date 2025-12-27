@@ -30,7 +30,7 @@ define_design_lib WORK -path ${WORK_DIR}
 
 set design_path ${DESIGN_DIR}
 set source_files [read_filelist_and_resolve ${DESIGN_DIR} ${filelist_name}]
-
+# analyze -format sverilog -vcs "-f ${filelist_name}"
 analyze -format verilog -lib work ${source_files}
 elaborate ${TopName}
 current_design ${TopName}

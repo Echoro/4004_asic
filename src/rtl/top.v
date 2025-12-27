@@ -11,6 +11,7 @@ module top (
         output wire [3:0] CM_RAM_N,
         input  wire       TEST
     );
+
     wire CLK = clk;
     wire RES_N = rst_n;
 
@@ -113,6 +114,7 @@ module top (
         else if (src_set)
             src <= rp;
     end
+    // taest
     wire    [3:0]        data_o_src;
     wire    [3:0]        data_o_acc;
 

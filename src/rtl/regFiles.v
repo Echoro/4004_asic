@@ -28,10 +28,11 @@ module regFiles (
         input  wire             rn_alu,
         input  wire             rn_acc
     );
-    reg     [ 3:0] reg_files [0:15];
+
     //-------------------------------
     // Index Registers
     //-------------------------------
+    reg     [ 3:0] reg_files [0:15];
     wire    [3:0]  rp0;
     wire    [3:0]  rp1;
 
@@ -72,5 +73,23 @@ module regFiles (
         else if (rn_acc)
             reg_files[rn_index]  <= acc;
     end
+    `ifdef FPGA
+    ila_0 ila_reg (
+	.clk(CLK), // input wire clk
+
+
+	.probe0(reg_files[0]), // input wire [3:0]  probe0
+	.probe1(reg_files[1]), // input wire [3:0]  probe1
+	.probe2(reg_files[2]), // input wire [3:0]  probe2
+	.probe3(reg_files[3]), // input wire [3:0]  probe3
+	.probe4(reg_files[4]), // input wire [3:0]  probe4
+	.probe5(reg_files[5]), // input wire [3:0]  probe5
+	.probe6(reg_files[6]), // input wire [3:0]  probe6
+	.probe7(reg_files[7]), // input wire [3:0]  probe7
+	.probe8(DATA_I)        // input wire [3:0]  probe8
+);
+
+
+    `endif
 
 endmodule

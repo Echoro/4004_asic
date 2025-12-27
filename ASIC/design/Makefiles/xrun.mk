@@ -173,6 +173,13 @@ indago:
 	@echo "debug is indago"
 	cd $(BUILD_DIR)/workspace/indago && indago -64bit -lwd $(BUILD_DIR)/xcelium.d -db $(INDAGO_DIR)
 	@echo "Welcom indago!"
+
+#######################################################
+verisium_debug:
+	@echo "debug is indago"
+	cd $(BUILD_DIR)/workspace/indago && verisium_debug -64bit -lwd $(BUILD_DIR)/xcelium.d -db $(INDAGO_DIR)
+	@echo "Welcom indago!"
+
 #######################################################
 simvision:
 	@echo "debug is simvision"
