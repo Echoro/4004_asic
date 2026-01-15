@@ -8,7 +8,7 @@ BUILD_ROOT      := $(realpath $(dir $(lastword $(MAKEFILE_LIST)))..)
 TOP_MODULE := tb
 VERSION    := smic13_tt
 has_uvm?=0
-run_sdf?=1
+run_sdf?=0
 # Output directory (run from work.vcs or others)
 ifeq ($(run_sdf), 1)
 BUILD_DIR       := $(BUILD_ROOT)/work_vcs/$(VERSION)/net_sim_sdf
@@ -33,7 +33,7 @@ ifeq ($(run_sdf), 1)
 # SDF  files
 FILELIST  	 	= -F $(BUILD_ROOT)/../../FPGA/src/testbench/filelist.f
 ADDITIONAL_FILES = $(BUILD_ROOT)/../../FPGA/src/testbench/tb.v
-PDK_FILE        := /home/eda/PDK/smic130/Verilog/smic13.v
+PDK_FILE        := /home/eda/PDK/digital/smic130/STD/Verilog/smic13.v
 SDF_FILELIST    := $(DESIGN_ROOT)/sdf_filelist.f
 # GATE_NETLIST    := $(BUILD_ROOT)/../PT/source_file/netlist.v
 GATE_NETLIST    := $(BUILD_ROOT)/../innovus/output/$(VERSION)/output/NETLIST/layout_netlist.v
@@ -106,7 +106,7 @@ com:
 	@cd $(BUILD_DIR)/vcs && $(VCS) $(VCS_OPTS)
 
 #######################################################
-run:
+sim:
 	@echo "============================================"
 	@echo "====> Running simulation TEST=${TEST_NAME}"
 	@echo "============================================"

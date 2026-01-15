@@ -41,9 +41,9 @@ versions=(
 )
 # 包含lib和db的文件夹路径
 LIB_DIRS=(
-    "/home/eda/PDK/smic130/Synopsys" \
-    "/home/eda/PDK/smic130/Synopsys" \
-    "/home/eda/PDK/smic130/Synopsys" \
+    "/home/eda/PDK/digital/smic130/STD/Synopsys" \
+    "/home/eda/PDK/digital/smic130/STD/Synopsys" \
+    "/home/eda/PDK/digital/smic130/STD/Synopsys" \
 )
 
 log_dir="run_log"

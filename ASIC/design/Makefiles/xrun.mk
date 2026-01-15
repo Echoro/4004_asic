@@ -147,7 +147,7 @@ WAVE_SIM_OPTS += 	+xmaccess+rwc +loadpli1=debpli:novas_pli_boot +loadpli1=${VERD
 WAVE_SIM_OPTS += 	+xm64bit -loadpli1 debpli:novas_pli_boot +fsdb+delta
 WAVE_SIM_OPTS += 	-INPUT $(WAVE_TCL_FILE)
 
-run:
+sim:
 	@echo "================================================";
 	@echo "	Simulation Start "
 	@echo "================================================";

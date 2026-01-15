@@ -5,18 +5,30 @@
 # Questasim installation path
 QUESTASIM_HOME := /home/eda/mentor/questasim/questasim/linux_x86_64
 # UVM package path (use the QuestaSim built-in UVM 1.1d library here)
-UVM_HOME       := /home/eda/mentor/questasim/questasim/uvm-1.2
-UVM_DPI_FILE  := /home/eda/mentor/questasim/questasim/uvm-1.2/linux_x86_64/uvm_dpi.so
+UVM_HOME       := /home/eda/mentor/questasim/questasim/verilog_src/uvm-1.2
+UVM_DPI_FILE  := /home/eda/mentor/questasim/questasim/uvm-1.2/linux_x86_64/uvm_dpi
 # QUESTA_UVM_PKG_PATH := /opt/eda_tool/wine_edatools/questasim_10.7_win64/verilog_src/questa_uvm_pkg-1.2
+# Absolute root path of the design directory
+DESIGN_ROOT     := $(realpath $(dir $(lastword $(MAKEFILE_LIST)))../../../src)
+BUILD_ROOT      := $(realpath $(dir $(lastword $(MAKEFILE_LIST)))..)
 
 # Compilation and simulation settings
 UVM_LIB        := uvm_lib
-WORK_DIR       := work
-FILELIST       := filelist.f
-TOP_LEVEL      := top              # Top-level testbench module
-SIM_LOG        := sim.log
-
 UVM_TEST       :=  random_test_m        # UVM test name (can override by environment)
+
+TOP_MODULE := tb
+VERSION    := smic13_tt
+FILELIST  	 	= -F $(DESIGN_ROOT)/filelist.f -F $(BUILD_ROOT)/../../FPGA/src/testbench/filelist.f
+ADDITIONAL_FILES = $(BUILD_ROOT)/../../FPGA/src/testbench/tb.v
+
+FILES_OPTS      := $(ADDITIONAL_FILES) $(FILELIST)
+
+# Default target
+
+
+BUILD_DIR       := $(BUILD_ROOT)/work_questasim/$(VERSION)/rtl_sim
+LOG_DIR        	:= $(BUILD_DIR)/logs
+WORK_DIR        := $(BUILD_DIR)/work
 
 ifeq ($(strip $(UVM_TEST)),random_test_m)
   MS       :=  1
@@ -26,11 +38,11 @@ endif
 # basetest test_case_circle
 
 # Tool commands
-VLOG           := wine $(QUESTASIM_HOME)/vlog.exe
-VSIM           := wine $(QUESTASIM_HOME)/vsim.exe
-VLIB           := wine $(QUESTASIM_HOME)/vlib.exe
-VMAP           := wine $(QUESTASIM_HOME)/vmap.exe
-VCOVER           := wine $(QUESTASIM_HOME)/vcover.exe
+VLOG           := $(QUESTASIM_HOME)/vlog
+VSIM           := $(QUESTASIM_HOME)/vsim
+VLIB           := $(QUESTASIM_HOME)/vlib
+VMAP           := $(QUESTASIM_HOME)/vmap
+VCOVER           := $(QUESTASIM_HOME)/vcover
 
 # Coverage options
 COVERAGE_OPT   := bcestf  # Branch, condition, expression, statement, toggle, directive, FSM
@@ -55,26 +67,28 @@ endif
 #-modelsimini modelsim.ini
 
 # Compile UVM testbench and design
-compile:
+com:
 	@echo "========== Start compiling =========="
-	@if [ ! -d work ]; then \
+	cd $(BUILD_DIR) && \
+	if [ ! -d work ]; then \
 		$(VLIB) work; \
 		$(VMAP) work work; \
-	fi
-	@echo "$(COMMON_OPTS)"
+	fi && \
 	$(VLOG) $(COMMON_OPTS) \
 		+incdir+$(UVM_HOME)/src \
 		$(UVM_HOME)/src/uvm_pkg.sv \
-		-f $(FILELIST)
+		$(FILES_OPTS) \
+		-l $(LOG_DIR)/compile.log
 
 # 		+incdir+$(QUESTA_UVM_PKG_PATH)/src \
 # 		$(QUESTA_UVM_PKG_PATH)/src/questa_uvm_pkg.sv \
 
 # Run simulation
 #-modelsimini modelsim.ini
-simulate:
+sim:
 	@echo "========== Start simulation!! TOP = $(TOP_LEVEL) =========="
-	@$(VSIM) -c  \
+	cd $(BUILD_DIR) && \
+	$(VSIM) -c  \
 		-voptargs="+acc" \
 		-sv_lib $(UVM_DPI_FILE) \
 		-wlf usb_uvm.wlf -debugDB \
@@ -85,13 +99,14 @@ simulate:
 		+UVM_PHASE_TRACE +UVM_CONFIG_DB_TRACE \
 		+UVM_NO_RELNOTES \
 		+UVM_RECORD=1 \
-		$(WORK_DIR).$(TOP_LEVEL) | tee $(SIM_LOG)
+		$(WORK_DIR).$(TOP_MODULE) -l $(LOG_DIR)/simulate.log
 
 # View simulation waveform
 view:
 	@echo "========== Launch waveform viewer =========="
 	@echo "$(COMMON_OPTS)"
-	@$(VSIM) -gui -view usb_uvm.wlf
+	cd $(BUILD_DIR) && \
+	$(VSIM) -gui -view usb_uvm.wlf
 
 # Clean build and simulation artifacts
 clean:
@@ -140,3 +155,10 @@ debug:
 		+UVM_NO_RELNOTES \
 		+UVM_RECORD=1 \
 		$(WORK_DIR).$(TOP_LEVEL) | tee $(SIM_LOG)
+
+init:
+	@echo "============================================"
+	@echo "====> Initializing build directory"
+	@echo "============================================"
+	@mkdir -p $(BUILD_DIR) $(WORK_DIR)
+	@mkdir -p $(LOG_DIR)

@@ -7,15 +7,15 @@ set PERIOD 2.5
 
 # set VERSION "saed32hvt_ff1p16vn40c"
 # set LIBRARY_NAME "saed32hvt_ff1p16vn40c"
-# set LIBRARY_DIR "/home/eda/PDK/SAED_32-28nm/SAED32_EDK/lib/stdcell_hvt"
+# set LIBRARY_DIR "/home/eda/PDK/digital/SAED_32-28nm/SAED32_EDK/lib/stdcell_hvt"
 # set LIB_FILE "$LIBRARY_DIR/db_nldm/$LIBRARY_NAME.lib"
 # set CELL_LEF "$LIBRARY_DIR/lef/saed32nm_hvt_1p9m.lef"
-# set TECH_LEF_PATH "/home/eda/PDK/SAED_32-28nm/SAED32_EDK/tech/tech_lef/saed32nm_1p9m_mw.lef"
+# set TECH_LEF_PATH "/home/eda/PDK/digital/SAED_32-28nm/SAED32_EDK/tech/tech_lef/saed32nm_1p9m_mw.lef"
 # set TECH_LEF_PATH "/home/eda/ASIC_scripts/yanfuti_icc2_block/library/tech/tlef/saed32nm_1p9m.tech.lef"
 
 set VERSION "smic13_tt"
 set LIBRARY_NAME "smic13_tt"
-set LIBRARY_DIR "/home/eda/PDK/smic130"
+set LIBRARY_DIR "/home/eda/PDK/digital/smic130/STD"
 set LIB_FILE "$LIBRARY_DIR/Synopsys/$LIBRARY_NAME.lib"
 set CELL_LEF "$LIBRARY_DIR/LEF/stdcell8_antenna.lef"
 set TECH_LEF_PATH "$LIBRARY_DIR/LEF/stdcell8.lef"

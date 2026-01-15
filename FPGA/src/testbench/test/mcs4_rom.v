@@ -67,7 +67,7 @@ reg [7:0] rom[0:4095];
 //
 initial
 begin
-    $readmemh("/home/echoro/Documents/Courses/Senior/First_term/design_experiment/4004/FPGA/src/testbench/software/program1/4001_generate.mem", rom);
+    $readmemh("/root/workspace/4004/FPGA/src/testbench/software/program1/4001_generate.mem", rom);
 end
 
 //---------------------------------
